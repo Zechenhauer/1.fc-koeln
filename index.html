@@ -910,7 +910,7 @@
         document.getElementById('visitorCountDisplay').textContent = count.toLocaleString('de-DE');
     }
 
-    // DIASHOW BILDER ARRAY
+    // DIASHOW BILDER ARRAY (Original mit 4 Bildern)
     const slides = [
         { url: "https://lhusylpjnujlqomougmg.supabase.co/storage/v1/object/public/vereinslogos/koeln_mannschaft.png", name: "Mannschaftsfoto" },
         { url: "https://lhusylpjnujlqomougmg.supabase.co/storage/v1/object/public/vereinslogos/koeln_stadion.png", name: "Das Stadion" },
@@ -1044,7 +1044,7 @@
             const p256dh = subscription.getKey('p256dh') ? btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('p256dh')))) : '';
             const auth = subscription.getKey('auth') ? btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('auth')))) : '';
 
-            // Speichert die Registrierung direkt in der neuen Supabase-Tabelle
+            // Speichert das Abo in der Tabelle push_subscriptions_koeln
             await supabaseClient.from('push_subscriptions_koeln').upsert({
                 endpoint: subscription.endpoint,
                 p256dh: p256dh,
@@ -1083,15 +1083,16 @@
         let uniqueGoalId = `${matchId}_${latestScorer}`;
 
         try {
+            // Nutzt exakt deine neu angelegte Tabelle sent_goals_all_koeln
             let { data: existing, error: checkError } = await supabaseClient
-                .from('sent_goals_bl')
+                .from('sent_goals_all_koeln')
                 .select('goal_id')
                 .eq('goal_id', uniqueGoalId)
                 .maybeSingle();
 
             if (!existing && !checkError) {
                 let { error: insertError } = await supabaseClient
-                    .from('sent_goals_bl')
+                    .from('sent_goals_all_koeln')
                     .insert([{ goal_id: uniqueGoalId }]);
 
                 if (!insertError) {
@@ -1108,7 +1109,7 @@
                 }
             }
         } catch (e) {
-            console.error("Fehler beim globalen Bundesliga-Tor-Cache:", e);
+            console.error("Fehler beim Tor-Cache (sent_goals_all_koeln):", e);
         }
     }
 
