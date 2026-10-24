@@ -46,17 +46,17 @@
             box-shadow: 0 4px 20px rgba(221, 0, 0, 0.2);
         }
 
-        /* LAUFBAND / TICKER STYLES */
+        /* 1:1 AS-ROM LAUFBAND-DESIGN (Kapsel-Optik mit Rahmen) */
         .ticker-wrapper {
             width: 100%;
-            background: #000000;
-            border: 1px solid var(--koeln-red);
-            border-radius: 6px;
+            background: #0c0809;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
             overflow: hidden;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
-            height: 36px;
+            height: 48px;
             position: relative;
         }
         .ticker-label {
@@ -64,53 +64,70 @@
             color: #ffffff;
             font-size: 0.75rem;
             font-weight: bold;
-            padding: 0 10px;
+            padding: 0 14px;
             height: 100%;
             display: flex;
             align-items: center;
-            z-index: 2;
+            z-index: 3;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             white-space: nowrap;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.5);
         }
         .ticker-content-box {
             overflow: hidden;
             white-space: nowrap;
             flex: 1;
             position: relative;
+            display: flex;
+            align-items: center;
         }
         .ticker-track {
-            display: inline-block;
+            display: flex;
             white-space: nowrap;
-            animation: ticker-scroll 95s linear infinite;
-            font-size: 0.85rem;
-            color: #ffffff;
-            font-weight: 500;
+            will-change: transform;
+            animation: ticker-scroll 35s linear infinite;
         }
         .ticker-track:hover {
             animation-play-state: paused;
         }
+        
+        /* Die einzelnen Spiel-Kapseln im AS-Rom Stil */
         .ticker-item {
-            display: inline-block;
-            padding: 0 30px;
+            display: inline-flex;
+            align-items: center;
+            background: #150a0d;
+            border: 1px solid #3d1c22;
+            padding: 6px 14px;
+            margin: 0 6px;
+            border-radius: 8px;
             color: #ffffff;
+            font-size: 0.82rem;
+            font-weight: 500;
+            gap: 10px;
         }
-        .ticker-item span {
+        .ticker-team-logo {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+            vertical-align: middle;
+        }
+        .ticker-score {
             color: #ffffff;
             font-weight: bold;
-            margin-left: 6px;
+            font-size: 0.9rem;
+            background: #251216;
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid #4a1f27;
         }
         .ticker-item.koeln-ticker-highlight {
-            background: rgba(221, 0, 0, 0.3);
-            border-top: 1px solid var(--koeln-red);
-            border-bottom: 1px solid var(--koeln-red);
-            padding-top: 2px;
-            padding-bottom: 2px;
-            border-radius: 4px;
+            border: 1px solid var(--koeln-red);
+            background: rgba(221, 0, 0, 0.15);
         }
         @keyframes ticker-scroll {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-50%, 0, 0); }
         }
 
         .banner-wrapper {
@@ -446,18 +463,18 @@
         .matchday-btn:hover { background: var(--koeln-red); color: #fff; border-color: var(--koeln-red); }
 
         .koeln-highlight { 
-            color: #ffffff !important; 
+            color: var(--koeln-bright-red) !important; 
             font-weight: bold; 
         }
 
         tr.koeln-match-row {
-            background: rgba(221, 0, 0, 0.12);
+            background: rgba(221, 0, 0, 0.15);
             border-left: 3px solid var(--koeln-red);
             border-right: 3px solid var(--koeln-red);
         }
         tr.koeln-match-row td {
-            border-top: 1px solid rgba(221, 0, 0, 0.3);
-            border-bottom: 1px solid rgba(221, 0, 0, 0.3);
+            border-top: 1px solid rgba(221, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(221, 0, 0, 0.4);
         }
 
         tr.match-win td { background: rgba(46, 160, 67, 0.2) !important; border-top: 1px solid rgba(46, 160, 67, 0.4); border-bottom: 1px solid rgba(46, 160, 67, 0.4); }
@@ -613,7 +630,7 @@
 <body>
 
 <div class="container">
-    <!-- LAUFBAND / LIVE-TICKER OBEN -->
+    <!-- 1:1 AS-ROM LAUFBAND OBEN -->
     <div class="ticker-wrapper">
         <div class="ticker-label" id="tickerLabel">🐐 Ticker</div>
         <div class="ticker-content-box">
@@ -910,7 +927,6 @@
         document.getElementById('visitorCountDisplay').textContent = count.toLocaleString('de-DE');
     }
 
-    // DIASHOW BILDER ARRAY (Original mit 4 Bildern)
     const slides = [
         { url: "https://lhusylpjnujlqomougmg.supabase.co/storage/v1/object/public/vereinslogos/koeln_mannschaft.png", name: "Mannschaftsfoto" },
         { url: "https://lhusylpjnujlqomougmg.supabase.co/storage/v1/object/public/vereinslogos/koeln_stadion.png", name: "Das Stadion" },
@@ -1044,7 +1060,6 @@
             const p256dh = subscription.getKey('p256dh') ? btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('p256dh')))) : '';
             const auth = subscription.getKey('auth') ? btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('auth')))) : '';
 
-            // Speichert das Abo in der Tabelle push_subscriptions_koeln
             await supabaseClient.from('push_subscriptions_koeln').upsert({
                 endpoint: subscription.endpoint,
                 p256dh: p256dh,
@@ -1083,7 +1098,6 @@
         let uniqueGoalId = `${matchId}_${latestScorer}`;
 
         try {
-            // Nutzt exakt deine neu angelegte Tabelle sent_goals_all_koeln
             let { data: existing, error: checkError } = await supabaseClient
                 .from('sent_goals_all_koeln')
                 .select('goal_id')
@@ -1109,7 +1123,7 @@
                 }
             }
         } catch (e) {
-            console.error("Fehler beim Tor-Cache (sent_goals_all_koeln):", e);
+            console.error("Fehler beim Tor-Cache:", e);
         }
     }
 
@@ -1238,27 +1252,26 @@
                                 if (detail.ownGoal) notes = " (ET)";
 
                                 let isHomeGoal = (detail.team?.id === homeComp.team.id);
-                                if (isHomeGoal) {
-                                    currentHomeCount++;
-                                } else {
-                                    currentAwayCount++;
-                                }
+                                if (isHomeGoal) currentHomeCount++;
+                                else currentAwayCount++;
 
                                 let scoreBracket = `[${currentHomeCount}:${currentAwayCount}] `;
                                 let goalEntry = clock ? `${scoreBracket}${playerName} (${clock}')` + notes : `${scoreBracket}${playerName}`;
                                 latestScorerText = goalEntry;
                                 scoringTeamName = isHomeGoal ? homeComp.team.displayName : awayComp.team.displayName;
 
-                                if (isHomeGoal) {
-                                    goalsHome.push(`⚽ ${goalEntry}`);
-                                } else {
-                                    goalsAway.push(`⚽ ${goalEntry}`);
-                                }
+                                if (isHomeGoal) goalsHome.push(`⚽ ${goalEntry}`);
+                                else goalsAway.push(`⚽ ${goalEntry}`);
 
                                 if (isLive) {
                                     let isKoelnGame = homeComp.team.displayName.includes("Cologne") || awayComp.team.displayName.includes("Cologne") || homeComp.team.displayName.includes("Köln") || awayComp.team.displayName.includes("Köln");
                                     let highlightClass = isKoelnGame ? ' koeln-ticker-highlight' : '';
-                                    latestLiveGoalsTicker.push(`<span class="ticker-item${highlightClass}">⚽ ${scoringTeamName}: ${playerName} ${clock ? '(' + clock + ')' : ''} <span>${homeComp.team.displayName} ${homeScoreVal}:${awayScoreVal} ${awayComp.team.displayName}</span></span>`);
+                                    let hLogo = teamLogos[homeComp.team.displayName.trim().toLowerCase()] || "";
+                                    let aLogo = teamLogos[awayComp.team.displayName.trim().toLowerCase()] || "";
+                                    let hLogoImg = hLogo ? `<img src="${hLogo}" class="ticker-team-logo">` : '';
+                                    let aLogoImg = aLogo ? `<img src="${aLogo}" class="ticker-team-logo">` : '';
+
+                                    latestLiveGoalsTicker.push(`<span class="ticker-item${highlightClass}">${hLogoImg} ${homeComp.team.displayName} <span class="ticker-score">${homeScoreVal}:${awayScoreVal}</span> ${awayComp.team.displayName} ${aLogoImg}</span>`);
                                 }
                             } else if (typeText.includes("yellow-red") || typeText.includes("gelb-rot")) {
                                 let cardEntry = `🟨🟥 ${playerName}${minuteStr}`;
@@ -1290,6 +1303,8 @@
                     leagueMatches[s].push({
                         home: homeComp.team.displayName,
                         away: awayComp.team.displayName,
+                        homeLogo: homeComp.team.logo || "",
+                        awayLogo: awayComp.team.logo || "",
                         date: dateStr,
                         time: timeStr,
                         homeScore: homeScoreVal,
@@ -1324,7 +1339,7 @@
         updateTicker();
     }
 
-    // TICKER-STEUERUNG MIT AUTOMATISCHEM FALLBACK & DYNAMISCHEM LABEL
+    // 1:1 AS-ROM TICKER-GENERIERUNG MIT SPIEL-KAPSELN
     function updateTicker() {
         let tickerItems = [];
         let labelText = "🐐 Ticker";
@@ -1348,15 +1363,19 @@
                 }
             }
 
-            labelText = `🐐 SPIELTAG ${targetMatchday} (ERGEBNISSE)`;
+            labelText = `🐐 SPIELTAG ${targetMatchday}`;
 
             matches.forEach(m => {
                 let score = (m.homeScore !== null && m.homeScore !== undefined) ? `${m.homeScore}:${m.awayScore}` : 'vs';
-                let status = m.isLive ? '🔴 LIVE' : (m.isFinished ? 'Endstand' : m.time || '');
                 let isKoelnGame = m.home.includes("Cologne") || m.away.includes("Cologne") || m.home.includes("Köln") || m.away.includes("Köln");
                 let highlightClass = isKoelnGame ? ' koeln-ticker-highlight' : '';
+
+                let hLogo = m.homeLogo || teamLogos[m.home.trim().toLowerCase()] || "";
+                let aLogo = m.awayLogo || teamLogos[m.away.trim().toLowerCase()] || "";
+                let hLogoImg = hLogo ? `<img src="${hLogo}" class="ticker-team-logo">` : '';
+                let aLogoImg = aLogo ? `<img src="${aLogo}" class="ticker-team-logo">` : '';
                 
-                tickerItems.push(`<span class="ticker-item${highlightClass}">${m.home} - ${m.away} <span>${score}</span> (${status})</span>`);
+                tickerItems.push(`<span class="ticker-item${highlightClass}">${hLogoImg} ${m.home} <span class="ticker-score">${score}</span> ${m.away} ${aLogoImg}</span>`);
             });
         }
 
@@ -1368,7 +1387,8 @@
         const tickerTrack = document.getElementById('tickerTrack');
         if (tickerTrack) {
             if (tickerItems.length > 0) {
-                tickerTrack.innerHTML = tickerItems.join('');
+                let innerHtml = tickerItems.join('');
+                tickerTrack.innerHTML = innerHtml + innerHtml;
             } else {
                 tickerTrack.innerHTML = `<span class="ticker-item">Keine Spiele im Ticker verfügbar.</span>`;
             }
@@ -1946,13 +1966,11 @@
         if (e.target === document.getElementById('legendModal')) closeLegendModal();
     }
 
-    // INITIALISIERUNG
     initVisitorCounter();
     showSlide(0);
     resetTimer();
     loadEspnMatchdayData();
 
-    // LIVE-AKTUALISIERUNG ALLE 30 SEKUNDEN
     setInterval(() => {
         if (!isAdmin) {
             loadEspnMatchdayData();
