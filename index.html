@@ -1330,7 +1330,7 @@
             const p256dh = subscription.getKey('p256dh') ? btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('p256dh')))) : '';
             const auth = subscription.getKey('auth') ? btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('auth')))) : '';
 
-            await supabaseClient.from('push_subscriptions_bayern').upsert({
+            await supabaseClient.from('push_subscriptions_koeln').upsert({
                 endpoint: subscription.endpoint,
                 p256dh: p256dh,
                 auth: auth
